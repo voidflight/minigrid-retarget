@@ -1,0 +1,18 @@
+python -m src.run_ppo --exp_name "Test" \
+    --seed 1 \
+    --cuda \
+    --track \
+    --wandb_project_name "PPO-MiniGrid" \
+    --env_id "MiniGrid-DoorKey-8x8-v0" \
+    --view_size 5 \
+    --total_timesteps 350000 \
+    --learning_rate 0.00025 \
+    --num_envs 8 \
+    --num_steps 128 \
+    --num_minibatches 4 \
+    --update_epochs 4 \
+    --clip_coef 0.2 \
+    --ent_coef 0.01 \
+    --vf_coef 0.5 \
+    --max_steps 1000 \
+    --one_hot_obs
