@@ -5,4 +5,4 @@ sphinxcontrib-napoleon>=0.7,<1.0; python_version >= '3.8' and python_version < '
 sphinx-autobuild>=2021.3.14,<2022.0.0; python_version >= '3.8' and python_version < '3.10'
 myst-parser>=0.18.1,<1.0.0; python_version >= '3.8' and python_version < '3.10'
 furo>=2022.12.7,<2023.0.0; python_version >= '3.8' and python_version < '3.10'
-sphinx-favicon==0.2
+sphinx-favicon==0.2  
