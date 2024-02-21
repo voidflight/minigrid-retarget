@@ -1,6 +1,6 @@
 from gymnasium import register
 from minigrid.core.world_object import Lava, Wall
-from minigrid.envs import CrossingEnv, DynamicObstaclesEnv, MultiRoomEnv, FetchObstaclesEnv
+from minigrid.envs import CrossingEnv, DynamicObstaclesEnv, MultiRoomEnv
 
 from src.ppo.my_probe_envs import (
     Probe1,
@@ -12,6 +12,7 @@ from src.ppo.my_probe_envs import (
 )
 
 from .memory import MemoryEnv
+from .fetchobstacles import FetchObstaclesEnv
 from .multienvironments import MultiEnvSampler
 
 

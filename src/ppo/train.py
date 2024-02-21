@@ -72,7 +72,10 @@ def train_ppo(
     schedule = [(i, target_types[0], target_colors[int((i%4)/2)]) for i in range(num_updates)]
     """
     
-    schedule = [0]*25 + [int((i%30)/15)+1 for i in range(num_updates)]
+    n_switching_between = 2
+    n_rollouts = 30
+    n_rollouts_all_goals = n_rollouts * n_switching_between
+    schedule = [0]*25 + [int((i%n_rollouts_all_goals)/n_rollouts)+1 for i in range(num_updates)]
     # schedule = [int((i%30)/10) for i in range(num_updates)]
     
     optimizer, scheduler = agent.make_optimizer(

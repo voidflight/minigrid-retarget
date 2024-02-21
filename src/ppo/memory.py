@@ -115,12 +115,10 @@ class Memory:
                         if "episode" in item.keys():
                             self.episode_lengths.append(item["episode"]["l"])
                             self.episode_returns.append(item["episode"]["r"])
-                            """
                             self.add_vars_to_log(
                                 episode_length=item["episode"]["l"],
                                 episode_return=item["episode"]["r"],
                             )
-                            """
 
                     self.global_step += 1
     

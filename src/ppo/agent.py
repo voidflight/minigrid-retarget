@@ -348,7 +348,6 @@ class FCAgent(PPOAgent):
                     .mean()
                     .item()
                 ]
-            """
             memory.add_vars_to_log(
                 learning_rate=optimizer.param_groups[0]["lr"],
                 avg_value=values.mean().item(),
@@ -357,10 +356,7 @@ class FCAgent(PPOAgent):
                 entropy=entropy_bonus.item(),
                 approx_kl=approx_kl,
                 clipfrac=np.mean(clipfracs),
-            )
-            """
-            memory.add_vars_to_log(
-                avg_value=values.mean().item(),
+                avg_return=np.mean(memory.episode_returns),
             )
 
 

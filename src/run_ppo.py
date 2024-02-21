@@ -7,15 +7,22 @@ from src.config import (
 from src.ppo.runner import ppo_runner
 from src.ppo.utils import parse_args
 from src.environments.registration import register_envs
+import torch 
+
+torch.set_default_dtype(torch.float32)
 
 if __name__ == "__main__":
     args = parse_args()
     register_envs()
 
+    device = "cuda" if args.cuda else "cpu",
+    # if torch.backends.mps.is_available():
+    #     device = "cpu"
+
     run_config = RunConfig(
         exp_name=args.exp_name,
         seed=args.seed,
-        device="cuda" if args.cuda else "cpu",
+        device=device,
         track=args.track,
         wandb_project_name=args.wandb_project_name,
         wandb_entity=args.wandb_entity,
