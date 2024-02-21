@@ -110,7 +110,7 @@ class PPOAgent(nn.Module):
         # weight_decay = 1e-3
         
         optimizer = optim.Adam(
-            self.parameters(), lr=initial_lr, eps=1e-5, maximize=True, weight_decay = 1e-3,
+            self.parameters(), lr=initial_lr, eps=1e-5, maximize=True, weight_decay = 3e-4,
         )
         """
         optimizer = optim.Adam(
@@ -187,11 +187,11 @@ class FCAgent(PPOAgent):
         )
         self.critic = nn.Sequential(
             nn.Flatten(),
-            self.layer_init(nn.Linear(self.num_obs, int(self.hidden_dim/2))),
+            self.layer_init(nn.Linear(self.num_obs, int(self.hidden_dim/1))),
             nn.Tanh(),
-            self.layer_init(nn.Linear(int(self.hidden_dim/2), int(self.hidden_dim/2))),
+            self.layer_init(nn.Linear(int(self.hidden_dim/1), int(self.hidden_dim/1))),
             nn.Tanh(),
-            self.layer_init(nn.Linear(int(self.hidden_dim/2), 1), std=1.0),
+            self.layer_init(nn.Linear(int(self.hidden_dim/1), 1), std=1.0),
         )
         self.actor = nn.Sequential(
             nn.Flatten(),

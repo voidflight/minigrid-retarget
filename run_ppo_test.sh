@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python -m src.run_ppo --exp_name "Batch-Size-Test" \
-    --seed 99 \
+    --seed 98 \
     --cuda \
     --track \
     --wandb_project_name "Retargeting-Search" \
