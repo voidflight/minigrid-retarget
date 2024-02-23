@@ -85,7 +85,7 @@ class FetchObstaclesEnv(MiniGridEnv):
         
         self.obstacles = []
         for i_obst in range(self.n_obstacles):
-            self.obstacles.append(Ball())
+            self.obstacles.append(Ball("grey"))
             self.place_obj(self.obstacles[i_obst], max_tries=100)
         
         objs = []

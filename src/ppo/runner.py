@@ -40,7 +40,7 @@ def ppo_runner(
     Returns: None.
     """
     target_types = ["key"] * 4
-    target_colors = ["green", "grey", "red", "purple"]
+    target_colors = ["grey", "blue", "purple", "yellow"]
     
     if online_config.trajectory_path:
         trajectory_writer = TrajectoryWriter(

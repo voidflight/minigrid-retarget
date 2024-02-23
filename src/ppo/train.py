@@ -73,10 +73,13 @@ def train_ppo(
     """
     
     n_switching_between = 2
-    n_rollouts = 30
+    n_rollouts = 15
     n_rollouts_all_goals = n_rollouts * n_switching_between
-    schedule = [0]*25 + [int((i%n_rollouts_all_goals)/n_rollouts)+1 for i in range(num_updates)]
-    # schedule = [int((i%30)/10) for i in range(num_updates)]
+    
+    # schedule = [int((i%n_rollouts_all_goals)/n_rollouts)+1 for i in range(num_updates)]
+    schedule = [1 for i in range(num_updates)]
+
+    # schedule = [0]*25 + [int((i%n_rollouts_all_goals)/n_rollouts)+1 for i in range(num_updates)]
     
     optimizer, scheduler = agent.make_optimizer(
         num_updates=num_updates,
@@ -128,7 +131,7 @@ def train_ppo(
             check_and_upload_new_video(
                 video_path=video_path, videos=videos, step=memory.global_step
             )
-                
+            """
             if (n + 1) % checkpoint_interval == 0:
                 checkpoint_num = store_model_checkpoint(
                     agent,
@@ -136,10 +139,10 @@ def train_ppo(
                     run_config,
                     checkpoint_num,
                     checkpoint_artifact,
-                    objective = memory.objective,
                 )
             """
-            elif (n+1)>1100 and (n+1-1100)%40 == 0:
+            
+            if (n+1)>0 and (n+1)%15 == 0:
                 checkpoint_num = store_model_checkpoint(
                     agent,
                     online_config,
@@ -148,18 +151,14 @@ def train_ppo(
                     checkpoint_artifact,
                     track_objective = True,
                     objective = memory.objective,
-                )
-                print("LOGGED OBJECTIVE CHECKPOINT")
-                print()
-            """
-            
+                )     
             
 
         output = memory.get_printable_output()
         progress_bar.set_description(output)
         
         memory.reset()
-
+    
     if run_config.track:
         checkpoint_num = store_model_checkpoint(
             agent,
@@ -167,8 +166,6 @@ def train_ppo(
             run_config,
             checkpoint_num,
             checkpoint_artifact,
-            track_objective = True,
-            objective = memory.objective,
         )
         wandb.log_artifact(checkpoint_artifact)  # Upload checkpoints to wandb
 

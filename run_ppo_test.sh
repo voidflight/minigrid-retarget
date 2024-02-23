@@ -1,7 +1,8 @@
 #!/bin/bash
 
-python -m src.run_ppo --exp_name "Batch-Size-Test" \
+python -m src.run_ppo --exp_name "Only-Blue-Test" \
     --seed 98 \
+    --cuda \
     --track \
     --wandb_project_name "Retargeting-Search" \
     --env_id "FetchObstacles-6x6-v0" \

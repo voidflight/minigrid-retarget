@@ -15,10 +15,10 @@ if __name__ == "__main__":
     args = parse_args()
     register_envs()
 
-    device = "cuda" if args.cuda else "cpu",
+    device = "cuda" if args.cuda else "cpu"
     # if torch.backends.mps.is_available():
     #     device = "cpu"
-
+    
     run_config = RunConfig(
         exp_name=args.exp_name,
         seed=args.seed,
