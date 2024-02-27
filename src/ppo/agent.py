@@ -187,11 +187,11 @@ class FCAgent(PPOAgent):
         )
         self.critic = nn.Sequential(
             nn.Flatten(),
-            self.layer_init(nn.Linear(self.num_obs, int(self.hidden_dim/1))),
+            self.layer_init(nn.Linear(self.num_obs, self.hidden_dim)),
             nn.Tanh(),
-            self.layer_init(nn.Linear(int(self.hidden_dim/1), int(self.hidden_dim/1))),
+            self.layer_init(nn.Linear(self.hidden_dim, self.hidden_dim)),
             nn.Tanh(),
-            self.layer_init(nn.Linear(int(self.hidden_dim/1), 1), std=1.0),
+            self.layer_init(nn.Linear(self.hidden_dim, 1), std=1.0),
         )
         self.actor = nn.Sequential(
             nn.Flatten(),

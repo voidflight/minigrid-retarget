@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python -m src.run_ppo --exp_name "Only-Blue-Test" \
+python -m src.run_ppo --exp_name "One-Key-Per-Obj-Test" \
     --seed 98 \
     --cuda \
     --track \

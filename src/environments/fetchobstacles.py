@@ -30,8 +30,10 @@ class FetchObstaclesEnv(MiniGridEnv):
         self.n_objs = n_objs
         self.obj_types = ["key"]
         
+        self.target_types = ["key", "key"]
+        self.target_colors = ["blue", "purple"]
         self.target_type = "key"
-        self.target_color = "green"
+        self.target_color = "blue"
         
         MISSION_SYNTAX = [
             "get a",
@@ -92,26 +94,19 @@ class FetchObstaclesEnv(MiniGridEnv):
         
         obj = None
         
-        if self.target_type == "key":
-            obj = Key(self.target_color)
-        elif self.target_type == "box":
-            obj = Box(self.target_color)
-        self.place_obj(obj)
-        objs.append(obj)
+        for i in range(len(self.target_types)):
+            
+            if self.target_types[i] == "key":
+                obj = Key(self.target_colors[i])
+            elif self.target_types[i] == "box":
+                obj = Box(self.target_colors[i])
+            self.place_obj(obj)
+            objs.append(obj)
         
-        """
-        if self.target_type == "key":
-            obj = Key(self.target_color)
-        elif self.target_type == "box":
-            obj = Box(self.target_color)
-        
-        self.place_obj(obj)
-        objs.append(obj)
-        """
         
         reduced_color_names = []
         for color in COLOR_NAMES:
-            if color != self.target_color:
+            if color not in self.target_colors:
                 reduced_color_names.append(color)
         
         while len(objs) < self.n_objs:
