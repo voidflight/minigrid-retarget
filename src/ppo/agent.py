@@ -188,19 +188,19 @@ class FCAgent(PPOAgent):
         self.critic = nn.Sequential(
             nn.Flatten(),
             self.layer_init(nn.Linear(self.num_obs, self.hidden_dim)),
-            nn.Tanh(),
+            nn.ReLU(),
             self.layer_init(nn.Linear(self.hidden_dim, self.hidden_dim)),
-            nn.Tanh(),
+            nn.ReLU(),
             self.layer_init(nn.Linear(self.hidden_dim, 1), std=1.0),
         )
         self.actor = nn.Sequential(
             nn.Flatten(),
             self.layer_init(nn.Linear(self.num_obs, self.hidden_dim)),
-            nn.Tanh(),
+            nn.ReLU(),
             self.layer_init(nn.Linear(self.hidden_dim, self.hidden_dim)),
-            nn.Tanh(),
+            nn.ReLU(),
             self.layer_init(nn.Linear(self.hidden_dim, self.hidden_dim)),
-            nn.Tanh(),
+            nn.ReLU(),
             self.layer_init(
                 nn.Linear(self.hidden_dim, self.num_actions), std=0.01
             ),
@@ -232,9 +232,6 @@ class FCAgent(PPOAgent):
         cuda = device.type == "cuda"
         obs = memory.next_obs
         done = memory.next_done
-        
-        # for env in envs.envs:
-            # env.switch_target(target_type, target_color)
             
         for _ in range(num_steps):
             with t.inference_mode():
@@ -295,6 +292,9 @@ class FCAgent(PPOAgent):
         optimizer: optim.Optimizer,
         scheduler: PPOScheduler,
         track: bool,
+        save = False,
+        mix = False,
+        mix_frac = None,
     ) -> None:
         """Performs the learning phase of the PPO algorithm, updating the agent's parameters
         using the collected experience.
@@ -306,8 +306,10 @@ class FCAgent(PPOAgent):
             scheduler (PPOScheduler): The scheduler attached to the optimizer.
             track (bool): Whether to track the training progress.
         """
-        for _ in range(args.update_epochs):
-            minibatches = memory.get_minibatches()
+        for k in range(args.update_epochs):
+            if k!=0:
+                save = False
+            minibatches = memory.get_minibatches(save = save, mix = mix, mix_frac = mix_frac)
             # Compute loss on each minibatch, and step the optimizer
             for mb in minibatches:
                 logits = self.actor(mb.obs)

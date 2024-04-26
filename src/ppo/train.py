@@ -53,33 +53,15 @@ def train_ppo(
         memories.append(Memory(envs, online_config, run_config.device, objective = target_type + "_" + target_color))
         
     agent = get_agent(model_config, envs_list[0], environment_config, online_config)
-    
-    # memory = Memory(envs, online_config, run_config.device, objective = "key_green")
-    # agent = get_agent(model_config, envs, environment_config, online_config)
         
     num_updates = online_config.total_timesteps // online_config.batch_size
     
-    # schedule = [int((i%12)/3) for i in range(num_updates)]
-    """
-    schedule = []
-    for i in range(int(num_updates/5) + 10):
-        schedule += [random.randint(0, 3)]*5
-    """
-    # schedule = [0 for i in range(int(1*num_updates/3))] + [1 for i in range(int(1*num_updates/5))] + [2 for i in range(int(1*num_updates/5))] + [1 for i in range(int(1*num_updates/4)+10000)]
-    """
-    target_types = ["key", "box"]
-    target_colors = ["green", "grey"]
-    schedule = [(i, target_types[0], target_colors[int((i%4)/2)]) for i in range(num_updates)]
-    """
     
     n_switching_between = 2
     n_rollouts = 15
     n_rollouts_all_goals = n_rollouts * n_switching_between
     
-    # schedule = [int((i%n_rollouts_all_goals)/n_rollouts)+1 for i in range(num_updates)]
-    schedule = [1 for i in range(num_updates)]
-
-    # schedule = [0]*25 + [int((i%n_rollouts_all_goals)/n_rollouts)+1 for i in range(num_updates)]
+    schedule = [int((i%n_rollouts_all_goals)/n_rollouts) for i in range(num_updates)]
     
     optimizer, scheduler = agent.make_optimizer(
         num_updates=num_updates,
@@ -117,30 +99,29 @@ def train_ppo(
     progress_bar = tqdm(range(num_updates), position=0, leave=True)
     for n in progress_bar:
         
+        # controls whether we mix older experiences into the current replay buffer; currently doesn't work
+        save = False
+        mix = False
+        mix_frac = False
+        
+        
         memory = memories[schedule[n]]
         envs = envs_list[schedule[n]]
         video_path = video_paths[schedule[n]]
         videos = videos_list[schedule[n]]
         
         agent.rollout(memory, online_config.num_steps, envs, trajectory_writer)
+        
         agent.learn(
-            memory, online_config, optimizer, scheduler, run_config.track)
+            memory, online_config, optimizer, scheduler, run_config.track, 
+            save = save, mix = mix, mix_frac = mix_frac
+        )
         
         if run_config.track:
             memory.log()
             check_and_upload_new_video(
                 video_path=video_path, videos=videos, step=memory.global_step
             )
-            """
-            if (n + 1) % checkpoint_interval == 0:
-                checkpoint_num = store_model_checkpoint(
-                    agent,
-                    online_config,
-                    run_config,
-                    checkpoint_num,
-                    checkpoint_artifact,
-                )
-            """
             
             if (n+1)>0 and (n+1)%15 == 0:
                 checkpoint_num = store_model_checkpoint(
@@ -158,6 +139,7 @@ def train_ppo(
         progress_bar.set_description(output)
         
         memory.reset()
+        
     
     if run_config.track:
         checkpoint_num = store_model_checkpoint(

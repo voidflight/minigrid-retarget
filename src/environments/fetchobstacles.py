@@ -16,7 +16,9 @@ from minigrid.core.grid import Grid
 from minigrid.core.mission import MissionSpace
 from minigrid.minigrid_env import MiniGridEnv
 from minigrid.core.constants import COLOR_NAMES
-from minigrid.core.world_object import Ball, Key, Box
+from minigrid.core.world_object import Ball, Box
+
+from .key import Key # This version of Key is slightly different from the minigrid one
 
 class FetchObstaclesEnv(MiniGridEnv):
     def __init__(
@@ -77,7 +79,13 @@ class FetchObstaclesEnv(MiniGridEnv):
     def switch_target(self, target_type, target_color):
         self.target_type = target_type
         self.target_color = target_color 
-        
+    
+    def switch_target_set(self, target_types = None, target_colors = None):
+        if target_types:
+            self.target_types = target_types
+        if target_colors:
+            self.target_colors = target_colors
+            
     def _gen_grid(self, width, height):
         
         self.grid = Grid(width, height)
@@ -166,20 +174,24 @@ class FetchObstaclesEnv(MiniGridEnv):
         obs, reward, terminated, truncated, info = super().step(action)
         
         if action == self.actions.forward and not_clear:
+            # print("hit obstacle")
             reward = -1
             terminated = True
             
             return obs, reward, terminated, truncated, info
         
         if self.carrying:
-            if (
-                self.carrying.color == self.target_color
-                and self.carrying.type == self.target_type
-            ):
-                reward = self._reward()
-                terminated = True
+            if (self.carrying.type == self.target_type):
+                if (self.carrying.color == self.target_color):
+                    reward = self._reward()
+                    terminated = True
+                else:
+                    # print(self.carrying.color)
+                    reward = 0.1
+                    terminated = True
             else:
-                reward = 0.1
+                # print(self.carrying.type)
+                reward = -1
                 terminated = True
 
         return obs, reward, terminated, truncated, info
